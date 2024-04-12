@@ -27,7 +27,7 @@ contract Main {
 
     // modifiers
     modifier onlyIflLogged {
-        require(isLogged(msg.sender), "You must login in your account.");
+        require(isLogged[msg.sender], "You must login in your account.");
         _;
     }
 
@@ -53,7 +53,7 @@ contract Main {
         usersCounter++;
     }
 
-    function login(string memory username, string memory _password) public {
+    function login(string memory _password) public {
         require(accounts[msg.sender].login != address(0), "Login not found.");
         require(keccak256(bytes(accounts[msg.sender].password)) == keccak256(bytes(_password)), "Wrong password.");
 
@@ -71,16 +71,17 @@ contract Main {
     function createPost(string memory _text) public onlyIflLogged {
         User memory user = getUser(msg.sender);
 
-        posts[msg.sender] = Post({
+        posts[msg.sender].push(Post({
             author: user,
             text: _text,
             likes: 0,
+            views: 0,
             datetimeCreated: block.timestamp
-        });
+        }));
     }
 
     function getUserPosts(address _userAddress) external view onlyIflLogged returns(Post[] memory) {
-        return posts[_usersAddress];
+        return posts[_userAddress];
     }
 
     function isUserRegistered(address _userAddress) external view returns(bool) {
