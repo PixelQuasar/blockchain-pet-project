@@ -140,3 +140,7 @@ contracts/node_moduless
 # client folder
 client/package-lock.json
 contracts/node_modules
+
+# env vars
+client/.env
+contracts/.env
