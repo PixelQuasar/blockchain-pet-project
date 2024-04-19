@@ -1,17 +1,25 @@
+import React from "react";
 import { createContext, useEffect, useState } from "react";
-import { Web3 } from "web3";
+import { Web3, Contract } from "web3";
 import abi from "../static-data/abi.json";
 import errors from "../static-data/errors.ts";
 
-export const ContractsContext = createContext({
-    contract: undefined,
+export interface IContactsContextData {
+    contract: Contract<any> | null;
+    userAccount: string;
+    networkAccounts: Array<string>;
+    userBalance: string;
+}
+
+export const ContractsContext = createContext<IContactsContextData>({
+    contract: null,
     userAccount: "",
     networkAccounts: [],
     userBalance: "",
 });
 
 export const ContactsContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [contract, setContract] = useState();
+    const [contract, setContract] = useState<Contract<any> | null>(null);
     const [userAccount, setUserAccount] = useState("");
     const [networkAccounts, setNetworkAccounts] = useState([]);
     const [userBalance, setUserBalance] = useState("");
@@ -27,13 +35,11 @@ export const ContactsContextProvider = ({ children }: { children: React.ReactNod
                         setNetworkAccounts(accounts);
                         setUserAccount(accounts[0]);
 
-                        // @ts-ignore
                         const weiBalance = await web3.eth.getBalance(accounts[0]);
                         const etherBalance = web3.utils.fromWei(weiBalance, "ether");
                         setUserBalance(String(etherBalance).slice(0, 8));
 
                         const contractInstance = new web3.eth.Contract(abi, import.meta.env.VITE_CONTRACT_ADRESS);
-                        // @ts-ignore
                         setContract(contractInstance);
                     } else {
                         console.error(errors.NO_ACCOUNTS);
@@ -55,3 +61,4 @@ export const ContactsContextProvider = ({ children }: { children: React.ReactNod
         </ContractsContext.Provider>
     );
 };
+\
