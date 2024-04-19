@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createContext, useEffect, useState } from "react";
 import { Web3, Contract } from "web3";
 import abi from "../static-data/abi.json";
@@ -6,22 +6,22 @@ import errors from "../static-data/errors.ts";
 
 export interface IContactsContextData {
     contract: Contract<any> | null;
-    userAccount: string;
-    networkAccounts: Array<string>;
+    userAddress: string;
+    networkAddresses: Array<string>;
     userBalance: string;
 }
 
 export const ContractsContext = createContext<IContactsContextData>({
     contract: null,
-    userAccount: "",
-    networkAccounts: [],
+    userAddress: "",
+    networkAddresses: [],
     userBalance: "",
 });
 
 export const ContactsContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [contract, setContract] = useState<Contract<any> | null>(null);
-    const [userAccount, setUserAccount] = useState("");
-    const [networkAccounts, setNetworkAccounts] = useState([]);
+    const [userAddress, setUserAddress] = useState("");
+    const [networkAddresses, setNetworkAddresses] = useState([]);
     const [userBalance, setUserBalance] = useState("");
 
     useEffect(() => {
@@ -32,8 +32,8 @@ export const ContactsContextProvider = ({ children }: { children: React.ReactNod
                 try {
                     const accounts = await eth.request({ method: "eth_requestAccounts" });
                     if (accounts && accounts.length > 0) {
-                        setNetworkAccounts(accounts);
-                        setUserAccount(accounts[0]);
+                        setNetworkAddresses(accounts);
+                        setUserAddress(accounts[0]);
 
                         const weiBalance = await web3.eth.getBalance(accounts[0]);
                         const etherBalance = web3.utils.fromWei(weiBalance, "ether");
@@ -56,9 +56,16 @@ export const ContactsContextProvider = ({ children }: { children: React.ReactNod
     }, []);
 
     return (
-        <ContractsContext.Provider value={{ contract, userAccount, networkAccounts, userBalance }}>
+        <ContractsContext.Provider value={{ contract, userAddress, networkAddresses, userBalance }}>
             {children}
         </ContractsContext.Provider>
     );
 };
-\
+
+export const useContractContext = () => {
+    const context = useContext(ContractsContext);
+    if (!context) {
+        throw new Error(errors.CONTRACT_CONTEXT_PROVIDER);
+    }
+    return context;
+};

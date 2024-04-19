@@ -1,13 +1,13 @@
 import { HomePageWrapper } from "./styles.ts";
-import { useContext } from "react";
-import { ContractsContext } from "../../context/contracts-context.tsx";
+import { useContractContext } from "../../context/contracts-context.tsx";
+import { Link } from "react-router-dom";
 
 export const HomePage = () => {
-    const contractsContext = useContext(ContractsContext);
+    const contractsContext = useContractContext();
     return (
         <HomePageWrapper>
             home page!!
-            <div>{JSON.stringify(contractsContext.networkAccounts)}</div>
+            <Link to={`/profile/${contractsContext.userAddress}`}>My profile</Link>
         </HomePageWrapper>
     );
 };

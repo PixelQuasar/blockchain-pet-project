@@ -9,5 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": { }
+  "dependencies": {
+    "recoil": "^0.7.7"
+  }
 }
