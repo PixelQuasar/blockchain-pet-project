@@ -7,7 +7,9 @@ export const HomePage = () => {
     return (
         <HomePageWrapper>
             home page!!
-            <Link to={`/profile/${contractsContext.userAddress}`}>My profile</Link>
+            <div>
+                <Link to={`/profile/${contractsContext.userAddress}`}>My profile</Link>
+            </div>
         </HomePageWrapper>
     );
 };

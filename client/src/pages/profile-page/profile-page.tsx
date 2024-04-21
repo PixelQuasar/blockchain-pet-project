@@ -16,5 +16,6 @@ export const ProfilePage = () => {
             navigate("/errors/notfound");
         }
     }, [addressContext.networkAddresses]);
+
     return <ProfilePageWrapper>hi {userAddress!}</ProfilePageWrapper>;
 };
